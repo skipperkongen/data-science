@@ -75,8 +75,23 @@ Example output:
 
 ## Write new JSON files based on jq output
 
-This is simple. Just redirect the output of jq to a file. It is probably a good idea to use the `--compact-output` flag to write each object to a single line by itself. Here is how to do that with one of the example queries from above:
+This is simple. Just redirect the output of jq to a file. It is probably a good idea to use the `--compact-output` (equivalent to `-c`) flag to write each object to a single line by itself. Here is how to do that with one of the example queries from above:
 
 ```
 jq --compact-output 'select(.user.id != null) | {user_id: .user.id}' data/twitter-sample/sample.json > user-ids.json
+``` 
+
+Lets also us write the six-attribute Twitter JSON projection to file, since we will use it in another section. To make it nicer we will filter out objects with null values:
+
+```
+jq -c 'select(.created_at != null and .user.id != null and .user.name != null and .text != null) | {
+  created_at: .created_at, 
+  user: {
+    id: .user.id, 
+    screen_name: .user.screen_name
+  }, 
+  text: .text, 
+  hashtags: [.entities.hashtags[].text], 
+  user_mentions: [.entities.user_mentions[] | {id: .id, screen_name: .screen_name}]
+}' data/twitter-sample/sample.json > data/twitter-sample/simpler-sample.json
 ``` 
