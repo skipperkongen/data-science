@@ -2,7 +2,7 @@
 
 In this section we will show how to use [jq](https://stedolan.github.io/jq/) to wrangle JSON data.
 
-## Example: Twitter JSON
+## Example: Twitter JSON wrangling
 
 In this example, we'll work with a sample of JSON data downloaded from twitter. We will primarily use [jq](https://stedolan.github.io/jq/) to process the JSON data.
 
@@ -14,7 +14,7 @@ Prerequisites:
 
 ### Filtering
 
-Here we show how to filter tweets on a condition.
+A JSON file can be filtered according to a condition.
 
 For example, to extract only tweets that have a valid coordinate, i.e. the 'geo' attribute is not null, use a selection:
 
@@ -24,9 +24,9 @@ jq 'select(.geo != null) sample.json
 
 ### Projection
 
-Here we will show how to project JSON data to an alternative structure.
+We can map over a JSON file to project each object into a new object, e.g. one that retains just a subset of the original attributes.
 
-For example, to retain a subset of the original tweet attributes including some nested structure, we can use a combination of pipes and list comprehensions.
+For example, we can greatly simplify our Twitter sample file by only keeping six core attributes of each tweet. Here we will keep only the creation date and time, user id and name, text, list of hashtags and list of user mentions. This example uses pipes for the overall projection and list comprehensions for the hashtags and user mentions attributes.
 
 ```
 jq '. | {
