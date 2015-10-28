@@ -1,2 +1,7 @@
-# data-science
-Code snippets for data science, mostly copied from books, websites etc.
+# Data Science
+
+This project contains snippets and data for trying data science techniques.
+
+* [JSON wrangling with jq](jq-data-wrangling.md) 
+
+
