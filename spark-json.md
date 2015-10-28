@@ -38,3 +38,5 @@ val filtered = projected.filter($"created_at".isNotNull && $"id".isNotNull && $"
 
 val lowered = filtered.select($"*", func.lower($"text").as("lowerText")).drop("text").withColumnRenamed("lowerText", "text")
 ```
+
+TODO: find out how to keep subset of fields inside nested input fields, e.g. user.id and user.name, under same nested output field.
