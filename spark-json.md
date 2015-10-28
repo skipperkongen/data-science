@@ -4,7 +4,7 @@ In this section, we use Spark to analyze Twitter data.
 
 ## Read JSON data into DataFrame
 
-Reading JSON data into Spark is dead easy (set basepath below to your data-science folder). The Twitter JSON schema is a little verbose, so we will reduce the data to the bare essensials. Also, we will lowercase the text field with a function from the [sql functions package](https://spark.apache.org/docs/1.4.0/api/scala/index.html#org.apache.spark.sql.functions$):
+Reading JSON data into Spark is dead easy (just set basepath below to your data-science folder):
 
 ```scala
 val basepath = "/path/to/data-science"
@@ -13,13 +13,15 @@ val df = sqlContext.read.json(s"$basepath/data/twitter-sample/sample.json")
 
 ## Inspect the data
 
-Let's count the number of tweets that lack a text:
+Count the number of tweets that lack a text:
 
-```
+```scala
 df.select($"text".isNotNull.as("hasText")).groupBy("hasText").count.show
 ```
 
 ## Reshape the data
+
+The Twitter JSON schema is a little verbose, so we will reduce the data to the bare essensials. Also, we will remove tweets with data missing and lowercase the text with a function from the useful [sql functions package](https://spark.apache.org/docs/1.4.0/api/scala/index.html#org.apache.spark.sql.functions$).
 
 First, we will import the set of useful functions in the sql package:
 
