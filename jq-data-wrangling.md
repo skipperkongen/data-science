@@ -1,4 +1,6 @@
-# Data wrangling with JQ
+# Data wrangling with jq
+
+In this section we will show how to use [jq](https://stedolan.github.io/jq/) to wrangle JSON data.
 
 ## Example: Twitter JSON
 
