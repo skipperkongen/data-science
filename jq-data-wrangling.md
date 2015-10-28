@@ -10,7 +10,7 @@ Prerequisites:
 
 * Linux shell
 * [jq](https://stedolan.github.io/jq/) for processing JSON
-* A [sample](https://dev.twitter.com/streaming/reference/get/statuses/sample) Twitter JSON file, `sample.json`.
+* A [sample](https://dev.twitter.com/streaming/reference/get/statuses/sample) Twitter JSON file, `sample.json`. This file is provided in the data/twitter-sample directory of this repository.
 
 ### Filtering
 
@@ -19,14 +19,26 @@ A JSON file can be filtered according to a condition.
 For example, to extract only tweets that have a valid coordinate, i.e. the 'geo' attribute is not null, use a selection:
 
 ```
-jq 'select(.geo != null) sample.json
+jq 'select(.geo != null)' data/twitter-sample/sample.json
 ```
 
 ### Projection
 
 We can map over a JSON file to project each object into a new object, e.g. one that retains just a subset of the original attributes.
 
-For example, we can greatly simplify our Twitter sample file by only keeping six core attributes of each tweet. Here we will keep only the creation date and time, user id and name, text, list of hashtags and list of user mentions. This example uses pipes for the overall projection and list comprehensions for the hashtags and user mentions attributes.
+The simplest possible projection is to extract a single attribute from each tweet, which may include null values:
+
+```
+jq '.user.id'  data/twitter-sample/sample.json  # notice that this is not valid JSON
+```
+
+To remove the null values and create a valid JSON structure, we can use a filter and a pipe:
+
+```
+jq 'select(.user.id != null) | {user_id: .user.id}' data/twitter-sample/sample.json
+```
+
+In a more advanced example, we will keep six core attributes of each tweet with nested structures for user information, hashtags and user mentions. This example uses pipes for the overall projection and list comprehensions for the hashtags and user mentions attributes.
 
 ```
 jq '. | {
@@ -38,7 +50,7 @@ jq '. | {
   text: .text, 
   hashtags: [.entities.hashtags[].text], 
   user_mentions: [.entities.user_mentions[] | {id: .id, screen_name: .screen_name}]
-}' sample.json
+}' data/twitter-sample/sample.json
 ```
 
 Example output:
@@ -60,3 +72,11 @@ Example output:
   ]
 }
 ```
+
+## Write new JSON files based on jq output
+
+This is simple. Just redirect the output of jq to a file. It is probably a good idea to use the `--compact-output` flag to write each object to a single line by itself. Here is how to do that with one of the example queries from above:
+
+```
+jq --compact-output 'select(.user.id != null) | {user_id: .user.id}' data/twitter-sample/sample.json > user-ids.json
+``` 
